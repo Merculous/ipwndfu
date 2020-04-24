@@ -131,3 +131,5 @@ chronic, CPICH, ius, MuscleNerd, Planetbeing, pod2g, posixninja, et al. for 24Kp
 pod2g for steaks4uce exploit
 
 walac for pyusb
+
+MCJack123 for ipsw_keys.py
