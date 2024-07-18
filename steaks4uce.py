@@ -132,7 +132,7 @@ def exploit():
   if chosenConfig is None:
     print 'ERROR: CPID is compatible, but serial number string does not match.'
     print 'Make sure device is in SecureROM DFU Mode and not LLB/iBSS DFU Mode. Exiting.'
-    sys.exit(0)
+    sys.exit(1)
 
   dfu.reset_counters(device)
   dfu.send_data(device, generate_shellcode(chosenConfig.constants))
